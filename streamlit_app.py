@@ -375,13 +375,32 @@ def send_telegram_notification(sender, has_text):
         
         # Messages pour l'admin
         messages_admin = [
+            f"📸 Nouveau message de ta cousine préférée !",
+            f"✨ une beauté absolue vient de poster une photo !",
+            f"🎉 Regarde ! une vision de paradie vient d'apparaitre !",
+            f"💌 Tu as reçu un message de la femme de ta vie !",
+            f"🔔 Ding dong ! tu as enfin reçu ce que tu attendais tout ce temps !",
+            f"📬 Viens voir cette pepite qui vient d'arriver !",
+            f"🌟 une beauté absolue pense à toi !",
+            f"💕 Message tout frais de ta cousine préférée !",
+            f"🎨 une beauté absolue partage un moment avec toi !",
+            f"🚀 Un message arrive en direction de ton coeur !",
+            f"Arrete d'esperer c'est ta cousine ! il y aura rien de plus !",
+            f"Attend au moins la fin de ton cours pour voir ce message",
+            f"Assis toi pour pas tomber par terre face a une tel beautée",
+            f"C'est bon tu vas passer une bonne journnée grace à ce message",
+            f"Baisse ta luminositée, tu vas être éblouie",
+        ]
+        
+        # Messages pour l'utilisateur
+        messages_user = [
             f"📸 Nouveau message de ton homme !",
-            f"✨ {sender_name} vient de poster une photo !",
+            f"✨ un homme grandiose vient de poster une photo !",
             f"🎉 Regarde ! un être malicieux a envoyé quelque chose !",
             f"💌 Tu as reçu un message rempli d'affection !",
             f"🔔 Ding dong ! C'est encore et toujours moi !",
             f"📬 Nouveau dans la boîte : tu l'attendais et il est enfin là !",
-            f"🌟 {sender_name} pense (encore et toujours) à toi !",
+            f"🌟 un homme grandiose pense (encore et toujours) à toi !",
             f"💕 Message tout frais de ton plus grand fan !",
             f"🎨 ton cousin PREFERE partage un instant de sa vie avec toi !",
             f"🚀 Message en approche de ton future mari !",
@@ -390,26 +409,6 @@ def send_telegram_notification(sender, has_text):
             f"Si tu réagie comme ça a chaque notif tes potes vont se poser des questions",
             f"C'est pour toi bébou... il a encore pensé a toi !",
             f"Viens voir ce corps d'apollon",
-
-        ]
-        
-        # Messages pour l'utilisateur
-        messages_user = [
-            f"📸 Nouveau message de ta cousine préférée !",
-            f"✨ {sender_name} vient de poster une photo !",
-            f"🎉 Regarde ! une vision de paradie vient d'apparaitre !",
-            f"💌 Tu as reçu un message de la femme de ta vie !",
-            f"🔔 Ding dong ! tu as enfin reçu ce que tu attendais tout ce temps !",
-            f"📬 Viens voir cette pepite qui vient d'arriver !",
-            f"🌟 {sender_name} pense à toi !",
-            f"💕 Message tout frais de ta cousine préférée !",
-            f"🎨 {sender_name} partage un moment avec toi !",
-            f"🚀 Un message arrive en direction de ton coeur !",
-            f"Arrete d'esperer c'est ta cousine ! il y aura rien de plus !",
-            f"Attend au moins la fin de ton cours pour voir ce message",
-            f"Assis toi pour pas tomber par terre face a une tel beautée",
-            f"C'est bon tu vas passer une bonne journnée grace à ce message",
-            f"Baisse ta luminositée, tu vas être éblouie",
         ]
         
         # Choisir un message aléatoire
