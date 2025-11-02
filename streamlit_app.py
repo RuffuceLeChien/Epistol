@@ -312,8 +312,15 @@ def load_messages():
     except Exception as e:
         return []
 
+def cleanup_old_messages(max_messages=50):
+    """Garde seulement les N derniers messages"""
+    if len(st.session_state.messages) > max_messages:
+        st.session_state.messages = st.session_state.messages[-max_messages:]
+        return True
+    return False
+
 def save_messages():
-    """Sauvegarde les messages sur GitHub"""
+    """Sauvegarde les messages sur GitHub avec compression optimale"""
     try:
         messages_to_save = []
         for msg in st.session_state.messages:
@@ -326,12 +333,16 @@ def save_messages():
             
             if 'image_with_text' in msg:
                 img_bytes = io.BytesIO()
-                msg['image_with_text'].save(img_bytes, format='PNG', optimize=False, compress_level=0)
+                # Convertir en JPEG pour réduire la taille (qualité 85%)
+                img_to_save = msg['image_with_text'].convert('RGB')
+                img_to_save.save(img_bytes, format='JPEG', quality=85, optimize=True)
                 msg_copy['image_with_text_b64'] = base64.b64encode(img_bytes.getvalue()).decode()
             
             if 'original_image' in msg:
                 img_bytes = io.BytesIO()
-                msg['original_image'].save(img_bytes, format='PNG', optimize=False, compress_level=0)
+                # Convertir en JPEG pour réduire la taille
+                img_to_save = msg['original_image'].convert('RGB')
+                img_to_save.save(img_bytes, format='JPEG', quality=85, optimize=True)
                 msg_copy['original_image_b64'] = base64.b64encode(img_bytes.getvalue()).decode()
             
             messages_to_save.append(msg_copy)
@@ -342,10 +353,26 @@ def save_messages():
             'counters': st.session_state.counters
         }
         
+        json_content = json.dumps(data, indent=2)
+        
+        # Vérifier la taille avant d'envoyer
+        size_mb = len(json_content.encode('utf-8')) / (1024 * 1024)
+        
+        if size_mb > 90:  # Limite GitHub ~100MB
+            st.error(f"❌ Fichier trop gros ({size_mb:.1f}MB). Supprimez d'anciens messages.")
+            return False
+        
         file_data = github_get_file(DATA_FILE)
         sha = file_data['sha'] if file_data else None
         
-        return github_update_file(DATA_FILE, json.dumps(data, indent=2), sha, "Update messages")
+        success = github_update_file(DATA_FILE, json_content, sha, "Update messages")
+        
+        if success:
+            st.sidebar.success(f"✅ Sauvegarde OK ({size_mb:.1f}MB)")
+        else:
+            st.sidebar.error("❌ Échec sauvegarde")
+        
+        return success
         
     except Exception as e:
         st.error(f"Erreur sauvegarde: {str(e)}")
@@ -750,8 +777,18 @@ def save_message(image, text, original_image, sender):
     }
     st.session_state.messages.append(message)
     increment_counter(sender)
-    save_messages()
-    send_telegram_notification(sender, bool(text))
+    
+    # Nettoyer si trop de messages
+    if cleanup_old_messages(max_messages=50):
+        st.info("🗑️ Messages anciens supprimés automatiquement")
+    
+    # Sauvegarder
+    success = save_messages()
+    
+    if success:
+        send_telegram_notification(sender, bool(text))
+    else:
+        st.error("⚠️ Photo non sauvegardée - fichier trop gros")
 
 def delete_message(message_id):
     """Supprime un message et décrémente le compteur"""
