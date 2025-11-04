@@ -400,10 +400,10 @@ def send_telegram_notification(sender, text=""):
         if text and text.strip():
             # Limiter à 100 caractères pour ne pas surcharger la notif
             text_preview = text.strip()
-            if len(text_preview) > 20:
-                text_preview = text_preview[:20] + "..."
+            if len(text_preview) > 35:
+                text_preview = text_preview[:35] + "..."
 
-            message = f"{text_preview}\"</i>"
+            message = f"{text_preview}"
         else:
             message = f"Photo"
         
