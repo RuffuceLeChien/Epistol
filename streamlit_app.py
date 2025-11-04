@@ -390,7 +390,7 @@ def load_passwords():
             pass
     return ["crush"]
 
-def send_telegram_notification(sender, has_text):
+def send_telegram_notification(sender, text=""):
     """Envoie une notification Telegram au groupe"""
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_GROUP_CHAT_ID:
         return False
