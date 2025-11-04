@@ -396,58 +396,21 @@ def send_telegram_notification(sender, has_text):
         return False
     
     try:
-        import random
         
-        sender_name = "un homme grandiose" if sender == "admin" else "une beauté absolue"
-        
-        # Messages pour l'admin
-        messages_admin = [
-            f"📸 Nouveau message de ta cousine préférée !",
-            f"✨ une beauté absolue vient de poster une photo !",
-            f"🎉 Regarde ! une vision de paradie vient d'apparaitre !",
-            f"💌 Tu as reçu un message de la femme de ta vie !",
-            f"🔔 Ding dong ! tu as enfin reçu ce que tu attendais tout ce temps !",
-            f"📬 Viens voir cette pepite qui vient d'arriver !",
-            f"🌟 une beauté absolue pense à toi !",
-            f"💕 Message tout frais de ta cousine préférée !",
-            f"🎨 une beauté absolue partage un moment avec toi !",
-            f"🚀 Un message arrive en direction de ton coeur !",
-            f"Arrete d'esperer c'est ta cousine ! il y aura rien de plus !",
-            f"Attend au moins la fin de ton cours pour voir ce message",
-            f"Assis toi pour pas tomber par terre face a une tel beautée",
-            f"C'est bon tu vas passer une bonne journnée grace à ce message",
-            f"Baisse ta luminositée, tu vas être éblouie",
-        ]
-        
-        # Messages pour l'utilisateur
-        messages_user = [
-            f"📸 Nouveau message de ton homme !",
-            f"✨ un homme grandiose vient de poster une photo !",
-            f"🎉 Regarde ! un être malicieux a envoyé quelque chose !",
-            f"💌 Tu as reçu un message rempli d'affection !",
-            f"🔔 Ding dong ! C'est encore et toujours moi !",
-            f"📬 Nouveau dans la boîte : tu l'attendais et il est enfin là !",
-            f"🌟 un homme grandiose pense (encore et toujours) à toi !",
-            f"💕 Message tout frais de ton plus grand fan !",
-            f"🎨 ton cousin PREFERE partage un instant de sa vie avec toi !",
-            f"🚀 Message en approche de ton future mari !",
-            f"Ton impatience de voir ce message est palpable",
-            f"On espère que ta famille ne tombera pas sur ce message",
-            f"Si tu réagie comme ça a chaque notif tes potes vont se poser des questions",
-            f"C'est pour toi bébou... il a encore pensé a toi !",
-            f"Viens voir ce corps d'apollon",
-        ]
-        
-        # Choisir un message aléatoire
-        if sender == "admin":
-            base_message = random.choice(messages_user)
+        if text and text.strip():
+            # Limiter à 100 caractères pour ne pas surcharger la notif
+            text_preview = text.strip()
+            if len(text_preview) > 20:
+                text_preview = text_preview[:20] + "..."
+
+            message = f"{text_preview}\"</i>"
         else:
-            base_message = random.choice(messages_admin)
+            message = f"Photo"
         
         url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
         response = requests.post(url, json={
             "chat_id": TELEGRAM_GROUP_CHAT_ID,
-            "text": base_message
+            "text": message
         }, timeout=5)
         
         return response.status_code == 200
@@ -781,12 +744,13 @@ def save_message(image, text, original_image, sender):
     # Nettoyer si trop de messages
     if cleanup_old_messages(max_messages=50):
         st.info("🗑️ Messages anciens supprimés automatiquement")
+  
     
     # Sauvegarder
     success = save_messages()
     
     if success:
-        send_telegram_notification(sender, bool(text))
+        send_telegram_notification(sender, text)
     else:
         st.error("⚠️ Photo non sauvegardée - fichier trop gros")
 
