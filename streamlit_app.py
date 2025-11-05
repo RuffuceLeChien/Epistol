@@ -391,30 +391,83 @@ def load_passwords():
     return ["crush"]
 
 def send_telegram_notification(sender, text=""):
-    """Envoie une notification Telegram au groupe"""
+    """Envoie une notification Telegram au groupe avec aperçu du texte"""
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_GROUP_CHAT_ID:
         return False
     
     try:
+        import random
         
-        if text and text.strip():
-            # Limiter à 100 caractères pour ne pas surcharger la notif
-            text_preview = text.strip()
-            if len(text_preview) > 35:
-                text_preview = text_preview[:35] + "..."
-
-            message = f"{text_preview}"
+        # Messages pour l'admin (quand user envoie)
+        messages_admin = [
+            "📸 Nouveau message de ta cousine préférée !",
+            "✨ une beauté absolue vient de poster une photo !",
+            "🎉 Regarde ! une vision de paradie vient d'apparaitre !",
+            "💌 Tu as reçu un message de la femme de ta vie !",
+            "🔔 Ding dong ! tu as enfin reçu ce que tu attendais tout ce temps !",
+            "📬 Viens voir cette pepite qui vient d'arriver !",
+            "🌟 une beauté absolue pense à toi !",
+            "💕 Message tout frais de ta cousine préférée !",
+            "🎨 une beauté absolue partage un moment avec toi !",
+            "🚀 Un message arrive en direction de ton coeur !",
+            "Arrete d'esperer c'est ta cousine ! il y aura rien de plus !",
+            "Attend au moins la fin de ton cours pour voir ce message",
+            "Assis toi pour pas tomber par terre face a une tel beauté",
+            "C'est bon tu vas passer une bonne journnée grace à ce message",
+            "Baisse ta luminositée, tu vas être éblouie"
+        ]
+        
+        # Messages pour l'utilisateur (quand admin envoie)
+        messages_user = [
+            "📸 Nouveau message de ton homme !",
+            "✨ un homme grandiose vient de poster une photo !",
+            "🎉 Regarde ! un être malicieux a envoyé quelque chose !",
+            "💌 Tu as reçu un message rempli d'affection !",
+            "🔔 Ding dong ! C'est encore et toujours moi !",
+            "📬 Nouveau dans la boîte : tu l'attendais et il est enfin là !",
+            "🌟 un homme grandiose pense (encore et toujours) à toi !",
+            "💕 Message tout frais de ton plus grand fan !",
+            "🎨 ton cousin PREFERE partage un instant de sa vie avec toi !",
+            "🚀 Message en approche de ton future mari !",
+            "Ton impatience de voir ce message est palpable",
+            "On espère que ta famille ne tombera pas sur ce message",
+            "Si tu réagie comme ça a chaque notif tes potes vont se poser des questions",
+            "C'est pour toi bébou... il a encore pensé a toi !",
+            "Viens voir ce corps d'apollon"
+            "grrr grrr... SAUVAGE !!!"
+            "❤️💞❤️"
+            "Avec une relation pareil c'est trop tard pour se poser des questions, faut se lancer"
+            "C'est encore lui ?! Evidement c'est toujours lui"
+            "Ton chéri 🥰"
+        ]
+        
+        # Choisir un message aléatoire selon l'expéditeur
+        if sender == "admin":
+            base_message = random.choice(messages_user)
         else:
-            message = f"Photo"
+            base_message = random.choice(messages_admin)
+        
+        # Ajouter l'aperçu du texte si présent
+        if text and text.strip():
+            # Limiter à 100 caractères
+            text_preview = text.strip()
+            if len(text_preview) > 40:
+                text_preview = text_preview[:40] + "..."
+            
+            
+            # Ajouter le texte avec mise en forme
+            final_message = base_message + "\n\n💬 Message :\n" + '"' + text_preview + '"'
+        else:
+            final_message = base_message
         
         url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
         response = requests.post(url, json={
             "chat_id": TELEGRAM_GROUP_CHAT_ID,
-            "text": message
+            "text": final_message
         }, timeout=5)
         
         return response.status_code == 200
-    except:
+    except Exception as e:
         return False
 
 def reload_heavy_libraries():
