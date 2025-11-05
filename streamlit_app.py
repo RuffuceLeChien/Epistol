@@ -433,12 +433,13 @@ def send_telegram_notification(sender, text=""):
             "On espère que ta famille ne tombera pas sur ce message",
             "Si tu réagie comme ça a chaque notif tes potes vont se poser des questions",
             "C'est pour toi bébou... il a encore pensé a toi !",
-            "Viens voir ce corps d'apollon"
-            "grrr grrr... SAUVAGE !!!"
-            "❤️💞❤️"
-            "Avec une relation pareil c'est trop tard pour se poser des questions, faut se lancer"
-            "C'est encore lui ?! Evidement c'est toujours lui"
-            "Ton chéri 🥰"
+            "Viens voir ce corps d'apollon",
+            "grrr grrr... SAUVAGE !!!",
+            "❤️💞❤️",
+            "Avec une relation pareil c'est trop tard pour se poser des questions, faut se lancer",
+            "C'est encore lui ?! Evidement c'est toujours lui",
+            "Ton chéri 🥰",
+            "Viens voir l'homme qui rend tes journées plus belles"
         ]
         
         # Choisir un message aléatoire selon l'expéditeur
